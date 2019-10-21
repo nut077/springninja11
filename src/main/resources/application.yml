@@ -1,0 +1,16 @@
+spring:
+  main:
+    lazy-initialization: false
+
+server:
+  port: 8080
+  compression:
+    enabled: true
+    min-response-size: 5KB
+  http2:
+    enabled: true
+  undertow:
+    accesslog:
+      enabled: true # เขียน log เมื่อมีการยิง request เข้ามา
+      dir: undertow-accesslog
+      pattern: '%t %I %r %s %b %D'

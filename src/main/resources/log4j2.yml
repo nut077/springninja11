@@ -1,0 +1,107 @@
+Configutation:
+  # ตัว log4j2 จะมีการ reload properties ต่างๆ แบบ realtime เราไม่สามารถใส่น้อยกว่า 5 ได้ หน่วยเป็นวินาที
+  monitorInterval: 60
+
+  # ประกาศค่าไว้ใช้ในตัว config นี้
+  Properties:
+    Property:
+      - name: dir
+        value: log
+      - name: file-name
+        value: application.log
+      - name: console-pattern
+        value: "%highlight{[%-5p]} %d %X{c-id} %c{1} > %m%n%ex{short}"
+      - name: file-pattern
+        value: "[%-5p] %d %X{c-id} %c{1} > %m%n%ex{short}"
+
+  # จะให้ log เราไปออกที่ไหนบ้าง
+  Appenders:
+    Console:
+      name: Console_Appender
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: ${console-pattern}
+
+    RollingRandomAccessFile:
+      name: RollingRandomAccessFile_Appender
+      fileName: '${dir}/${file-name}'
+      filePattern: "${dir}/${file-name}-%d{MM-dd-yy}.log.gz"
+      immediateFlush: false
+      PatternLayout:
+        pattern: ${file-pattern}
+
+      Policies:
+        TimeBasedTriggeringPolicy:
+          # log file จะทำการขึ้นไฟล์ใหม่ทุก 12 ชั่วโมง
+          interval: 12
+        SizeBasedTriggeringPolicy:
+          # ถ้ามี size เกิน 20 MB ให้ทำการขึ้นไฟล์ใหม่
+          size: 20 MB
+
+      #เราจะทำการลบไฟล์เก่าๆยังไงบ้าง
+      DefaultRolloverStrategy:
+        Delete:
+          # ไฟล์อยู่ที่ไหน
+          basePath: ${dir}
+          # ความลึก ลึกลงไป 2 ชั้นต่อจาก basePath
+          maxDepth: 2
+          # ถ้าชื่อไฟล์ตรงตาม pattern ตามที่กำหนดไว้
+          IfFileName:
+            glob: "*/${file-name}*log.gz"
+          # ถ้าไฟล์มีอายุมากกว่า 7 วันก็จะทำการลบ
+          IfLastModified:
+            age: 7D
+
+  Loggers:
+    AsyncRoot:
+      includeLocation: false
+      level: info
+      # ต้ว log ทั้งหมดที่ถือว่าเป็น root จะให้ออกที่ไหนบ้าง
+      AppenderRef:
+        - ref: Console_Appender
+        - ref: RollingRandomAccessFile_Appender
+
+    AsyncLogger:
+      - name: com.github.nut077.springninja
+        additivity: false
+        level: info
+        AppenderRef:
+          - ref: Console_Appender
+          - ref: RollingRandomAccessFile_Appender
+
+      - name: org.springframework.boot.web.embedded.undertow.UndertowServletWebServer
+        level: info
+        additivity: false
+        AppenderRef:
+          - ref: Console_Appender
+          - ref: RollingRandomAccessFile_Appender
+
+      - name: org.hibernate.engine.internal
+        level: info
+        additivity: false
+        AppenderRef:
+          - ref: Console_Appender
+          - ref: RollingRandomAccessFile_Appender
+
+      - name: org.springframework.boot.web.servlet
+        level: info
+        additivity: false
+        AppenderRef:
+          - ref: Console_Appender
+          - ref: RollingRandomAccessFile_Appender
+
+      # show sql
+      - name: org.hibernate.SQL
+        level: off #off or #debug
+        additivity: false
+        AppenderRef:
+          - ref: Console_Appender
+          - ref: RollingRandomAccessFile_Appender
+
+      # show binding params
+      - name: org.hibernate.type
+        level: off #off or #trace
+        additivity: false
+        AppenderRef:
+          - ref: Console_Appender
+          - ref: RollingRandomAccessFile_Appender
