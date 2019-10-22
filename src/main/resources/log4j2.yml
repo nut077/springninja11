@@ -105,3 +105,10 @@ Configutation:
         AppenderRef:
           - ref: Console_Appender
           - ref: RollingRandomAccessFile_Appender
+
+      - name: org.hibernate.engine.internal.StatisticalLoggingSessionEventListener
+        level: info
+        additivity: false
+        AppenderRef:
+          - ref: Console_Appender
+          - ref: RollingRandomAccessFile_Appender
