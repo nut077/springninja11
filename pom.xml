@@ -88,6 +88,7 @@
             <version>${mapstruct.version}</version>
         </dependency>
 
+        <!-- ทำให้ใช้ mvn ใน java 11 ได้ -->
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
