@@ -27,7 +27,16 @@ public class SpringninjaApplication implements CommandLineRunner {
 	public void run(String... args) {
 		//testImmutable();
 		//testListener();
-		testDynamicInsertAndUpdate();
+		//testDynamicInsertAndUpdate();
+		testElementCollection();
+	}
+
+	private void testElementCollection() {
+		Product p = new Product();
+		p.setName("ElementCollection");
+		p.getAliasNames().add("Java");
+		p.getAliasNames().add("Go");
+		productRepository.save(p);
 	}
 
 	private void testDynamicInsertAndUpdate() {
