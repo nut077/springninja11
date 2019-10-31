@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+import java.util.Optional;
+
 @Repository
 public interface ProductRepository extends CommonRepository<Product, Long> {
 
@@ -16,4 +19,12 @@ public interface ProductRepository extends CommonRepository<Product, Long> {
   @Modifying(flushAutomatically = true, clearAutomatically = true)
   @Query(value = "update products set name = :name where code = :code", nativeQuery = true)
   void sqlUpdate(String name, String code);
+
+  // query method
+  Optional<Collection<Product>> findAllByStatus(Product.Status status);
+  Optional<Collection<Product>> findAllByStatusOrderByIdDesc(Product.Status status);
+  Optional<Collection<Product>> findAllByNameContaining(String name);
+  Optional<Collection<Product>> findAllByNameContainingIgnoreCase(String name);
+  Optional<Collection<Product>> findAllByCodeContainingAndNameEndingWith(String code, String name);
+  Optional<Collection<Product>> findAllByCodeOrCodeAndName(String whereCode, String orCode, String andName);
 }

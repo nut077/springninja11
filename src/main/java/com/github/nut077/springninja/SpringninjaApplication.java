@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 @SpringBootApplication
 @RequiredArgsConstructor
@@ -37,7 +38,41 @@ public class SpringninjaApplication implements CommandLineRunner {
 		//testDynamicInsertAndUpdate();
 		//testElementCollection();
 		//testTransactional();
-		queryByExample();
+		//queryByExample();
+		queryMethod();
+	}
+
+	private void queryMethod() {
+		log.info("Inseting multiple Products");
+
+		productRepository.saveAll(Arrays.asList(
+			Product.builder().code("101").name("A1").status(Product.Status.APPROVED).build(),
+			Product.builder().code("102").name("a2").status(Product.Status.PENDING).build(),
+			Product.builder().code("103").name("B1").status(Product.Status.NOT_APPROVED).build(),
+			Product.builder().code("104").name("b2").status(Product.Status.APPROVED).build()
+		));
+		log.info("Count number of all product : {}", productRepository.count());
+
+		log.info("find all");
+		productRepository.findAll().forEach(System.out::println);
+
+		log.info("Find all 'APPROVED' products");
+		productRepository.findAllByStatus(Product.Status.APPROVED).orElse(Collections.EMPTY_LIST).forEach(System.out::println);
+
+		log.info("Find all 'APPROVED' products order by Id desc");
+		productRepository.findAllByStatusOrderByIdDesc(Product.Status.APPROVED).orElse(Collections.EMPTY_LIST).forEach(System.out::println);
+
+		log.info("Find all products that name contains 'b'");
+		productRepository.findAllByNameContaining("b").orElse(Collections.EMPTY_LIST).forEach(System.out::println);
+
+		log.info("Find all products that name contains 'b' or 'B'");
+		productRepository.findAllByNameContainingIgnoreCase("b").orElse(Collections.EMPTY_LIST).forEach(System.out::println);
+
+		log.info("Find all products that code contains '0' and name endsWith '2'");
+		productRepository.findAllByCodeContainingAndNameEndingWith("0", "2").orElse(Collections.EMPTY_LIST).forEach(System.out::println);
+
+		log.info("Find all products that code equals('101') or (code equals('103') and name equals('B1'))");
+		productRepository.findAllByCodeOrCodeAndName("101", "103", "B1").orElse(Collections.EMPTY_LIST).forEach(System.out::println);
 	}
 
 	private void queryByExample() {

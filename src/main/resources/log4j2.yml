@@ -10,9 +10,9 @@ Configutation:
       - name: file-name
         value: application.log
       - name: console-pattern
-        value: "%highlight{[%-5p]} %d %X{c-id} %c{1} > %m%n%ex{short}"
+        value: "%highlight{[%-5p]} %d %X{c-id} %c{1} > %m%n%ex{full}"
       - name: file-pattern
-        value: "[%-5p] %d %X{c-id} %c{1} > %m%n%ex{short}"
+        value: "[%-5p] %d %X{c-id} %c{1} > %m%n%ex{full}"
 
   # จะให้ log เราไปออกที่ไหนบ้าง
   Appenders:
@@ -69,46 +69,46 @@ Configutation:
           - ref: Console_Appender
           - ref: RollingRandomAccessFile_Appender
 
-      - name: org.springframework.boot.web.embedded.undertow.UndertowServletWebServer
-        level: info
-        additivity: false
-        AppenderRef:
-          - ref: Console_Appender
-          - ref: RollingRandomAccessFile_Appender
-
-      - name: org.hibernate.engine.internal
-        level: info
-        additivity: false
-        AppenderRef:
-          - ref: Console_Appender
-          - ref: RollingRandomAccessFile_Appender
-
-      - name: org.springframework.boot.web.servlet
-        level: info
-        additivity: false
-        AppenderRef:
-          - ref: Console_Appender
-          - ref: RollingRandomAccessFile_Appender
-
-      # show sql
-      - name: org.hibernate.SQL
-        level: off #off or #debug
-        additivity: false
-        AppenderRef:
-          - ref: Console_Appender
-          - ref: RollingRandomAccessFile_Appender
-
-      # show binding params
-      - name: org.hibernate.type
-        level: off #off or #trace
-        additivity: false
-        AppenderRef:
-          - ref: Console_Appender
-          - ref: RollingRandomAccessFile_Appender
-
-      - name: org.hibernate.engine.internal.StatisticalLoggingSessionEventListener
-        level: info
-        additivity: false
-        AppenderRef:
-          - ref: Console_Appender
-          - ref: RollingRandomAccessFile_Appender
+#      - name: org.springframework.boot.web.embedded.undertow.UndertowServletWebServer
+#        level: info
+#        additivity: false
+#        AppenderRef:
+#          - ref: Console_Appender
+#          - ref: RollingRandomAccessFile_Appender
+#
+#      - name: org.hibernate.engine.internal
+#        level: info
+#        additivity: false
+#        AppenderRef:
+#          - ref: Console_Appender
+#          - ref: RollingRandomAccessFile_Appender
+#
+#      - name: org.springframework.boot.web.servlet
+#        level: info
+#        additivity: false
+#        AppenderRef:
+#          - ref: Console_Appender
+#          - ref: RollingRandomAccessFile_Appender
+#
+#      # show sql
+#      - name: org.hibernate.SQL
+#        level: off #off or #debug
+#        additivity: false
+#        AppenderRef:
+#          - ref: Console_Appender
+#          - ref: RollingRandomAccessFile_Appender
+#
+#      # show binding params
+#      - name: org.hibernate.type
+#        level: off #off or #trace
+#        additivity: false
+#        AppenderRef:
+#          - ref: Console_Appender
+#          - ref: RollingRandomAccessFile_Appender
+#
+#      - name: org.hibernate.engine.internal.StatisticalLoggingSessionEventListener
+#        level: info
+#        additivity: false
+#        AppenderRef:
+#          - ref: Console_Appender
+#          - ref: RollingRandomAccessFile_Appender
