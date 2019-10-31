@@ -11,8 +11,11 @@ import java.util.stream.Stream;
 @Entity(name = "products")
 @Getter
 @Setter
-@EqualsAndHashCode
 @ToString
+@Builder
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 @SequenceGenerator(name = "products_seq")
 @Table(
   indexes = {
@@ -35,7 +38,7 @@ public class Product extends Common {
   @Column(length = 1)
   private Status status;
 
-  @ElementCollection // มีไว้สำหรับ map field ที่เป็น collection พวก Set หรือว่า list ของตัวแปรที่เป็น basic type หรือ ตัวแรปที่เป็น class ที่ map ด้วย annotation @Embeddable
+  @ElementCollection(fetch = FetchType.EAGER) // มีไว้สำหรับ map field ที่เป็น collection พวก Set หรือว่า list ของตัวแปรที่เป็น basic type หรือ ตัวแรปที่เป็น class ที่ map ด้วย annotation @Embeddable
                             // ชื่อ table                                                     // field ที่ใช้ join
   @CollectionTable(name = "products_alias_names_custom", joinColumns = @JoinColumn(name = "products_id_custom")) // ถ้าต้องการเปลี่ยนชื่อตาราง
   private Set<String> aliasNames = new HashSet<>();

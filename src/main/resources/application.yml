@@ -15,7 +15,7 @@ spring:
     password: a b
 
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: create-drop #create-drop สร้าง schema ต่างๆที่เราได้ทำใน entity และจำ destroy schema เมื่อทำการปิด project #สร้าง schema แต่ไม่ destroy
     properties:
