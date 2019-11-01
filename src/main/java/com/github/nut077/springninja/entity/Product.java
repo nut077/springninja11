@@ -1,5 +1,6 @@
 package com.github.nut077.springninja.entity;
 
+import com.github.nut077.springninja.dto.Pojo;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,6 +24,36 @@ import java.util.stream.Stream;
     @Index(name = "products_idx_status", columnList = "status")
   }
 )
+
+@NamedQueries({
+  @NamedQuery(
+    name = "Product.fetchDetailNotNull",
+    query = "select p from products p where p.detail is not null"),
+  @NamedQuery(
+    name = "Product.fetchDetailLengthGreaterThan2",
+    query = "select p from products p where length(p.detail) > 2")
+})
+
+// @SqlResultSetMapping ใช้คู่กับ @NamedNativeQueries
+@SqlResultSetMapping(
+  name = "pojo",
+  classes = {
+    @ConstructorResult(
+      targetClass = Pojo.class,
+      columns = {
+        @ColumnResult(name = "id", type = Long.class),
+        @ColumnResult(name = "codeAndName", type = String.class),
+        @ColumnResult(name = "detail", type = String.class)
+      }
+    )
+  }
+)
+@NamedNativeQueries({
+  @NamedNativeQuery(
+    name = "Product.customFetchProductToPojo",
+    query = "select p.id, p.code||' : '||p.name as codeAndName, p.detail from products p",
+    resultSetMapping = "pojo")
+})
 public class Product extends Common {
 
   @Id

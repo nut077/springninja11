@@ -39,7 +39,40 @@ public class SpringninjaApplication implements CommandLineRunner {
 		//testElementCollection();
 		//testTransactional();
 		//queryByExample();
-		queryMethod();
+		//queryMethod();
+		nameNativeQuery();
+	}
+
+	private void nameNativeQuery() {
+		/*
+		ข้อดี
+		  jpql or sql จะถูก process ตอน application start query ของเราเป็น static คือไม่ต้อง compile ตอนเรียกใช้งาน จึงเป็นผลดีต่อ performance
+		  สามารถใช้ resultSetMapping คือ custom query อย่างเช่นใน database มี 10 fields เราก็เอามาแสดงแค่ 2 ตัวได้ หรือทำการ concat field ได้
+
+		ข้อเสีย
+		   entity class ดูรกๆ
+		   สมารถใช้ได้เฉพาะ query ที่เป็น select
+		   ไม่ support dynamic queryม Dynamic query คือ คิวรีใดๆก็แล้วแต่ที่ ถูก compile ตอน runtime เช่นอย่างการเขียน query แล้วมีการเช็ค if else ถ้ามีตัวแปรจะ where อะไร
+		 */
+    productRepository.saveAll(Arrays.asList(
+      Product.builder().code("101").name("A1").status(Product.Status.APPROVED).build(),
+      Product.builder().code("102").name("a2").status(Product.Status.PENDING).detail("a").build(),
+      Product.builder().code("103").name("B1").status(Product.Status.NOT_APPROVED).build(),
+      Product.builder().code("104").name("b2").status(Product.Status.APPROVED).detail("detail").build()
+    ));
+
+    log.info("Count number of all products : {}", productRepository.count());
+    log.info("Find all");
+    productRepository.findAll().forEach(System.out::println);
+
+    log.info("Fetch products where detail not null");
+    productRepository.fetchDetailNotNull().orElse(Collections.EMPTY_LIST).forEach(System.out::println);
+
+    log.info("Fetch products where detail length > 2");
+    productRepository.fetchDetailLengthGreaterThan2().orElse(Collections.EMPTY_LIST).forEach(System.out::println);
+
+    log.info("Custom fetch products to pojo");
+    productRepository.customFetchProductToPojo().forEach(System.out::println);
 	}
 
 	private void queryMethod() {

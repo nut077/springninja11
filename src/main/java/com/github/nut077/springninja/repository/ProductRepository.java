@@ -1,5 +1,6 @@
 package com.github.nut077.springninja.repository;
 
+import com.github.nut077.springninja.dto.Pojo;
 import com.github.nut077.springninja.entity.Product;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -7,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -27,4 +29,10 @@ public interface ProductRepository extends CommonRepository<Product, Long> {
   Optional<Collection<Product>> findAllByNameContainingIgnoreCase(String name);
   Optional<Collection<Product>> findAllByCodeContainingAndNameEndingWith(String code, String name);
   Optional<Collection<Product>> findAllByCodeOrCodeAndName(String whereCode, String orCode, String andName);
+
+  // name native query
+  Optional<List<Product>> fetchDetailNotNull();
+  Optional<List<Product>> fetchDetailLengthGreaterThan2();
+  @Query(nativeQuery = true)
+  List<Pojo> customFetchProductToPojo();
 }
