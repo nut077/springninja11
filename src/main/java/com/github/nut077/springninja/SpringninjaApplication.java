@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -40,7 +42,54 @@ public class SpringninjaApplication implements CommandLineRunner {
 		//testTransactional();
 		//queryByExample();
 		//queryMethod();
-		nameNativeQuery();
+		//nameNativeQuery();
+		queryAnnotation();
+	}
+
+	private void queryAnnotation() {
+		/*
+		ข้อดี
+			support jpql and sql default is jpql
+			find method ทำอะไร
+			อยากตั้งชื่อ method อะไรก็ได้ ไม่มีผลอะไร
+			ถ้าเขียน query ก็เขียนไปที่ annotation ได้เลย
+
+		ข้อเสีย
+			ไม่ support dynamic query
+			ไม่สามารถเปลี่ยน database ได้ ถ้าทำต้องทำการทดสอบใหม่ทั้งหมดว่าสามารถ run ได้หรือไม่
+		 */
+
+		log.info("Inserting multiple Products");
+		productRepository.saveAll(Arrays.asList(
+			Product.builder().code("101").name("A1").status(Product.Status.APPROVED).build(),
+			Product.builder().code("102").name("B2").status(Product.Status.APPROVED).build(),
+			Product.builder().code("103").name("C1").status(Product.Status.PENDING).detail("Hi").build(),
+			Product.builder().code("104").name("D2").status(Product.Status.NOT_APPROVED).detail("Hello").build()
+		));
+		log.info("Count number of all products : {}", productRepository.count());
+		log.info("Find all");
+		productRepository.findAll().forEach(System.out::println);
+
+		log.info("[JPQL-Indexing parameters] select all by name and status");
+		productRepository.selectAllByNameAndStatus("C1", Product.Status.PENDING).forEach(System.out::println);
+
+		log.info("[JPQL-Named parameters] select all by status and name");
+		productRepository.selectAllByStatusAndName(Product.Status.APPROVED, "A1").forEach(System.out::println);
+
+		log.info("[JPQL-Named parameters] select all by name endsWith");
+		productRepository.selectAllByNameEndsWith("2").forEach(System.out::println);
+
+		log.info("[SQL-Named parameters] select all by status and date");
+		productRepository.selectAllByStatusAndDate(Product.Status.APPROVED.getCode(), DateTimeFormatter.ofPattern("yyyy-MM-dd").format(OffsetDateTime.now()))
+			.forEach(System.out::println);
+
+		log.info("Update status by Id");
+		productRepository.updateStatusById(Product.Status.DELETED, "104");
+		log.info(productRepository.findById(4L).get());
+
+		log.info("remove all by status");
+		productRepository.removeAllByStatus(Product.Status.DELETED.getCode());
+		log.info(productRepository.findById(4L));
 	}
 
 	private void nameNativeQuery() {

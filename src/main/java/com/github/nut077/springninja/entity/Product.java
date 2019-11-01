@@ -77,6 +77,7 @@ public class Product extends Common {
   @RequiredArgsConstructor
   public enum Status {
     APPROVED("A"),
+    DELETED("D"),
     NOT_APPROVED("N"),
     PENDING("P");
 
