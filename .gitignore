@@ -11,3 +11,4 @@ target/
 *.ipr
 /undertow-accesslog/
 log/
+/course-db.trace.db
