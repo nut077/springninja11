@@ -1,16 +1,20 @@
 package com.github.nut077.springninja;
 
+import com.github.nut077.springninja.config.CaffeineCacheConfig;
 import com.github.nut077.springninja.entity.Order;
 import com.github.nut077.springninja.entity.OrderId;
 import com.github.nut077.springninja.entity.Product;
 import com.github.nut077.springninja.repository.OrderRepository;
 import com.github.nut077.springninja.repository.ProductRepository;
 import com.github.nut077.springninja.repository.specification.ProductSpec;
+import com.github.nut077.springninja.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.caffeine.CaffeineCache;
+import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,10 +22,15 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
+
+import static com.github.nut077.springninja.config.CaffeineCacheConfig.CacheName.PRODUCT;
+import static com.github.nut077.springninja.config.CaffeineCacheConfig.CacheName.PRODUCTS;
 
 @SpringBootApplication
 @RequiredArgsConstructor
@@ -29,7 +38,10 @@ import java.util.Collections;
 public class SpringninjaApplication implements CommandLineRunner {
 
 	private final ProductRepository productRepository;
+	private final ProductService productService;
 	private final OrderRepository orderRepository;
+	private final SimpleCacheManager simpleCacheManager;
+	private final CaffeineCacheConfig caffeineCacheConfig;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringninjaApplication.class, args);
@@ -46,7 +58,79 @@ public class SpringninjaApplication implements CommandLineRunner {
 		//queryMethod();
 		//nameNativeQuery();
 		//queryAnnotation();
-		dynamicQuery();
+		//dynamicQuery();
+		cacheCaffeine();
+	}
+
+	private void cacheCaffeine() {
+		log.info("Inserting multiple Products");
+		productRepository.saveAll(Arrays.asList(
+			Product.builder().code("101").name("A1").status(Product.Status.APPROVED).score(99).build(),
+			Product.builder().code("102").name("B2").status(Product.Status.APPROVED).score(80).detail("not null").build(),
+			Product.builder().code("103").name("C1").status(Product.Status.PENDING).score(30).detail("Hi").build(),
+			Product.builder().code("104").name("D2").status(Product.Status.NOT_APPROVED).score(70).build()
+		));
+
+		productsCache();
+		log.info("Before cache find all products");
+		LocalTime timeBeforeCache = LocalTime.now();
+		log.info(productService.findAll().size());
+		log.info(() -> "time -->> " + Duration.between(timeBeforeCache, LocalTime.now()).toMillis());
+		LocalTime timeAfterCache = LocalTime.now();
+		log.info("After cache find all products");
+		log.info(productService.findAll().size());
+		log.info(() -> "time -->> " + Duration.between(timeAfterCache, LocalTime.now()).toMillis());
+		productsCache();
+		log.info("#####################################################");
+
+		productCache();
+		log.info("Before find product id 1");
+		log.info(productService.find(1L));
+		log.info("After find product id 1");
+		log.info(productService.find(1L));
+		productCache();
+		log.info("#####################################################");
+
+		productCache();
+		log.info("Before find product id 2");
+		log.info(productService.find(2L));
+		log.info("After find product id 2");
+		log.info(productService.find(2L));
+		productCache();
+		log.info("#####################################################");
+
+		productCache();
+		log.info("Before find product id 3");
+		log.info(productService.find(3L));
+		log.info("After find product id 3 don't cache because socre < 50");
+		log.info(productService.find(3L));
+		productCache();
+		log.info("#####################################################");
+
+		Product product1 = Product.builder().id(1L).code("101").name("A1").score(99.99).build();
+		log.info("Before update product id 1 -->> {}", product1);
+		productService.update(product1);
+		log.info("After update product id 1 -->> {}", productService.find(1L).get());
+		productCache();
+		log.info("#####################################################");
+
+		log.info("evict product 2L");
+		productService.delete(2L);
+		log.info(productService.find(2L));
+		productCache();
+
+		log.info("evict all");
+		caffeineCacheConfig.evictAll();
+		productCache();
+		productsCache();
+	}
+
+	private void productsCache() {
+		log.info("Cache name PRODUCTS {}", ((CaffeineCache) simpleCacheManager.getCache(PRODUCTS)).getNativeCache().asMap());
+	}
+
+	private void productCache() {
+		log.info("Cache name PRODUCT {}", ((CaffeineCache) simpleCacheManager.getCache(PRODUCT)).getNativeCache().asMap());
 	}
 
 	private void dynamicQuery() {

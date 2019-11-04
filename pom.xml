@@ -90,11 +90,14 @@
             <version>${org.mapstruct.version}</version>
         </dependency>
 
-        <!-- ทำให้ใช้ mvn ใน java 11 ได้ -->
         <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm</artifactId>
-            <version>7.2</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>2.8.0</version>
         </dependency>
 
         <dependency>

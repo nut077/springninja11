@@ -62,6 +62,7 @@ public class Product extends Common {
   private String code;
   private String name;
   private String detail;
+  private double score;
 
   //@Enumerated(value = EnumType.ORDINAL) default คือ ORDINAL จะเก็บข้อมูลเป็น 0,1,2....
   //@Enumerated(value = EnumType.STRING) เก็บข้อมูลเป็นคำๆ
