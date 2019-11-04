@@ -9,6 +9,7 @@ import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -41,6 +42,7 @@ public class CaffeineCacheConfig {
     );
   }
 
+  @Scheduled(cron = "0 0 0 * * *") // ทุกๆ เที่ยงคืนให้ทำการเคลียร์ cache
   @Caching(
     evict = {
       @CacheEvict(cacheNames = CacheName.PRODUCT, allEntries = true),

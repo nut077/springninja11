@@ -28,6 +28,7 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 import static com.github.nut077.springninja.config.CaffeineCacheConfig.CacheName.PRODUCT;
 import static com.github.nut077.springninja.config.CaffeineCacheConfig.CacheName.PRODUCTS;
@@ -42,6 +43,8 @@ public class SpringninjaApplication implements CommandLineRunner {
 	private final OrderRepository orderRepository;
 	private final SimpleCacheManager simpleCacheManager;
 	private final CaffeineCacheConfig caffeineCacheConfig;
+
+	DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringninjaApplication.class, args);
@@ -59,8 +62,50 @@ public class SpringninjaApplication implements CommandLineRunner {
 		//nameNativeQuery();
 		//queryAnnotation();
 		//dynamicQuery();
-		cacheCaffeine();
+		//cacheCaffeine();
 	}
+
+	// ############## start scheduler ##############
+
+	//@Scheduled(fixedDelay = 2000) // 2s
+	public void scheduleFixedDelayTask() throws InterruptedException {
+		// [1][1][1][1][1][1][1][1][1][1][1][1][1][1][1][1][1][1][1]
+		// [      5s     ] task1
+		//                      [      5s     ] task2
+		//                                           [      5s     ] task3
+
+		// ทำ Thread แรก 5 วิ รอ 2 วิ และทำ Thread ต่อไปอีก 5 วิ รออีก 2 วิ แบบนี้ต่อไปเรื่อยๆ
+		TimeUnit.SECONDS.sleep(5);
+		log.info(Thread.currentThread().getName() + " : FIXED-DELAY Task :: {}", dateTimeFormatter.format(LocalTime.now()));
+	}
+
+	//@Scheduled(fixedRate = 3000) // 3s
+	public void scheduleFixedRateTask() throws InterruptedException {
+		// [1][1][1][1][1][1][1][1][1][1][1][1][1][1][1][1][1][1][1]
+		// [      5s     ] task1
+		//          [      5s     ] task2
+		//                   [      5s     ] task3
+
+		// ทุกๆ 3 วิ จะเริ่มทำ 1 Thread
+		TimeUnit.SECONDS.sleep(5);
+		log.info(Thread.currentThread().getName() + " : FIXED-RATE Task :: {}", dateTimeFormatter.format(LocalTime.now()));
+	}
+
+	//@Scheduled(cron = "0/3 * * * * *") // วินาที นาที ชั่วโมง วัน เดือน วันใดบ้างในอาทิตย์  at https://crontab.guru/
+	public void scheduCronExpressionTask() throws InterruptedException {
+		// [1][1][1][1][1][1][1][1][1][1][1][1][1][1][1][1][1][1][1]
+		// [   3s  ] task1
+		//          [   3s  ] task2
+		//                   [   3s  ] task3
+
+		// ทำ Thread แต่ละ Thread ทุก 3 วิ
+		TimeUnit.SECONDS.sleep(3);
+		log.info(Thread.currentThread().getName() + " : CRON TASK :: {}", dateTimeFormatter.format(LocalTime.now()));
+	}
+
+
+
+	// ############## end scheduler ##############
 
 	private void cacheCaffeine() {
 		log.info("Inserting multiple Products");
