@@ -8,10 +8,13 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import static com.github.nut077.springninja.config.CaffeineCacheConfig.CacheName.PRODUCT;
 import static com.github.nut077.springninja.config.CaffeineCacheConfig.CacheName.PRODUCTS;
@@ -48,5 +51,17 @@ public class ProductService {
   @CacheEvict
   public void delete(Long id) {
     productRepository.deleteById(id);
+  }
+
+  @Async // จะใช้ได้เฉพาะ method ที่เป็น public เท่านั้น
+  public CompletableFuture<Product> find(String name) throws InterruptedException {
+    TimeUnit.SECONDS.sleep(1);
+    log.info("[{}] Find product name[{}]", Thread.currentThread().getName(), name);
+    return CompletableFuture.completedFuture(productRepository.findByName(name).orElse(null));
+  }
+
+  @Async // ใช้เทสกรณี exception
+  public void voidMethod() {
+    throw new RuntimeException("Test exception");
   }
 }

@@ -68,4 +68,7 @@ public interface ProductRepository extends CommonRepository<Product, Long> {
   )
   void removeAllByStatus(@Param("status") String status);
 
+  // used for Async
+  Optional<Product> findByName(String name);
+
 }

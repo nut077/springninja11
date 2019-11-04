@@ -21,13 +21,15 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StopWatch;
 
-import java.time.Duration;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.nut077.springninja.config.CaffeineCacheConfig.CacheName.PRODUCT;
@@ -63,6 +65,31 @@ public class SpringninjaApplication implements CommandLineRunner {
 		//queryAnnotation();
 		//dynamicQuery();
 		//cacheCaffeine();
+		async();
+	}
+
+	private void async() throws InterruptedException {
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		productService.save(Product.builder().name("apple").code("F001").build());
+		productService.save(Product.builder().name("lemon").code("F002").build());
+		productService.save(Product.builder().name("coconut").code("F003").build());
+
+		CompletableFuture<Product> apple = productService.find("apple");
+		CompletableFuture<Product> lemon = productService.find("lemon");
+		CompletableFuture<Product> coconut = productService.find("coconut");
+
+		List<CompletableFuture<Product>> completableFutures = Arrays.asList(apple, lemon, coconut);
+		CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0]))
+			.whenComplete((aVoid, throwable) ->
+				completableFutures.forEach(completableFuture -> log.info(completableFuture.join()))
+			).join();
+		stopWatch.stop();
+
+		// test exception
+		productService.voidMethod();
+
+		log.info("Elapsed Time : " + stopWatch.getTotalTimeSeconds() + " Sec");
 	}
 
 	// ############## start scheduler ##############
@@ -116,15 +143,19 @@ public class SpringninjaApplication implements CommandLineRunner {
 			Product.builder().code("104").name("D2").status(Product.Status.NOT_APPROVED).score(70).build()
 		));
 
+		StopWatch stopWatchBeforeFindAllProducts = new StopWatch();
+		stopWatchBeforeFindAllProducts.start();
 		productsCache();
 		log.info("Before cache find all products");
-		LocalTime timeBeforeCache = LocalTime.now();
 		log.info(productService.findAll().size());
-		log.info(() -> "time -->> " + Duration.between(timeBeforeCache, LocalTime.now()).toMillis());
-		LocalTime timeAfterCache = LocalTime.now();
+		stopWatchBeforeFindAllProducts.stop();
+		log.info(() -> "time -->> " + stopWatchBeforeFindAllProducts.getTotalTimeSeconds() + " Sec.");
+		StopWatch stopWatchAfterFindAllProducts = new StopWatch();
+		stopWatchAfterFindAllProducts.start();
 		log.info("After cache find all products");
 		log.info(productService.findAll().size());
-		log.info(() -> "time -->> " + Duration.between(timeAfterCache, LocalTime.now()).toMillis());
+		stopWatchAfterFindAllProducts.stop();
+		log.info(() -> "time -->> " + stopWatchAfterFindAllProducts.getTotalTimeSeconds() + " Sec.");
 		productsCache();
 		log.info("#####################################################");
 
