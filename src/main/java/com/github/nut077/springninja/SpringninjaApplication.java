@@ -5,6 +5,7 @@ import com.github.nut077.springninja.entity.OrderId;
 import com.github.nut077.springninja.entity.Product;
 import com.github.nut077.springninja.repository.OrderRepository;
 import com.github.nut077.springninja.repository.ProductRepository;
+import com.github.nut077.springninja.repository.specification.ProductSpec;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.CommandLineRunner;
@@ -12,6 +13,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +45,44 @@ public class SpringninjaApplication implements CommandLineRunner {
 		//queryByExample();
 		//queryMethod();
 		//nameNativeQuery();
-		queryAnnotation();
+		//queryAnnotation();
+		dynamicQuery();
+	}
+
+	private void dynamicQuery() {
+		/*
+		 ข้อดี
+		   query ถูกสร้างตอน runtime จะยืดหยุ่นกว่าปกติ
+		 ข้อเสีย
+		   เปลือง performance เพราะว่าต้อง compile ทุกครั้ง
+		 */
+		log.info("Inserting multiple Products");
+		productRepository.saveAll(Arrays.asList(
+			Product.builder().code("101").name("A1").status(Product.Status.APPROVED).build(),
+			Product.builder().code("102").name("B2").status(Product.Status.APPROVED).detail("not null").build(),
+			Product.builder().code("103").name("C1").status(Product.Status.PENDING).detail("Hi").build(),
+			Product.builder().code("104").name("D2").status(Product.Status.NOT_APPROVED).detail("Hello").build()
+		));
+		log.info("Count number of all products : {}", productRepository.count());
+
+		log.info("Find products name equals B2");
+		productRepository.findAll(ProductSpec.nameEquals("B2")).forEach(System.out::println);
+
+		log.info("Find name like 1");
+		productRepository.findAll(ProductSpec.nameLike("1")).forEach(System.out::println);
+
+		log.info("Find status equals APPROVE");
+		productRepository.findAll(ProductSpec.statusEquals(Product.Status.APPROVED)).forEach(System.out::println);
+
+		log.info("Find status equals APPROVE and detail is not null");
+		productRepository.findAll(ProductSpec.statusEqualsAndDetailIsNotNull(Product.Status.APPROVED)).forEach(System.out::println);
+
+		log.info("Find name like 1 and status equals APPROVE");
+		productRepository.findAll(
+			Specification
+				.where(ProductSpec.nameLike("1"))
+				.and(ProductSpec.statusEquals(Product.Status.PENDING))
+		).forEach(System.out::println);
 	}
 
 	private void queryAnnotation() {
