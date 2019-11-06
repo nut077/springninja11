@@ -7,6 +7,7 @@ import com.github.nut077.springninja.entity.Product;
 import com.github.nut077.springninja.repository.OrderRepository;
 import com.github.nut077.springninja.repository.ProductRepository;
 import com.github.nut077.springninja.repository.specification.ProductSpec;
+import com.github.nut077.springninja.service.testprofile.Calculate;
 import com.github.nut077.springninja.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -45,6 +46,7 @@ public class SpringninjaApplication implements CommandLineRunner {
 	private final OrderRepository orderRepository;
 	private final SimpleCacheManager simpleCacheManager;
 	private final CaffeineCacheConfig caffeineCacheConfig;
+	private final Calculate calculate;
 
 	DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
@@ -68,6 +70,14 @@ public class SpringninjaApplication implements CommandLineRunner {
 		//async();
 		//retry();
 		//retryTemplate();
+		profilesActive();
+	}
+
+	private void profilesActive() {
+		// profile dev
+		log.info(calculate.calculate(5, 3)); // result -->> 8
+		// profile uat
+		//log.info(calculate.calculate(5, 3)); // result -->> 2
 	}
 
 	private void retryTemplate() {

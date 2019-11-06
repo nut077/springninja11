@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: dev
   main:
     lazy-initialization: true
 
@@ -37,6 +39,7 @@ server:
       dir: undertow-accesslog
       pattern: '%t %I %r %s %b %D'
 
+#custom
 custom:
   async:
     corePoolSize: 10
@@ -62,4 +65,28 @@ custom:
   scheduler:
     poolSize: 3
     threadNamePrefix: Scheduler-
+
+#  สร้าง profile ใหม่ ใช้ ---
+---
+spring:
+  profiles: dev
+custom:
+  caffeine:
+    cache:
+      productsMaxSize: 11
+      productMaxSize: 111
+      expireAfterAccess: 1h
+      expireAfterWrite: 24h
+
+---
+spring:
+  profiles: uat
+custom:
+  caffeine:
+    cache:
+      productsMaxSize: 12
+      productMaxSize: 112
+      expireAfterAccess: 1h
+      expireAfterWrite: 24h
+
 
