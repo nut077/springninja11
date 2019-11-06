@@ -57,7 +57,7 @@ import java.util.stream.Stream;
 public class Product extends Common {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "products_seq")
+  @GeneratedValue(generator = "products_seq")
   private Long id;
   private String code;
   private String name;

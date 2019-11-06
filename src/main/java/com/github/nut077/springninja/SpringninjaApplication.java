@@ -65,7 +65,17 @@ public class SpringninjaApplication implements CommandLineRunner {
 		//queryAnnotation();
 		//dynamicQuery();
 		//cacheCaffeine();
-		async();
+		//async();
+		//retry();
+		//retryTemplate();
+	}
+
+	private void retryTemplate() {
+		log.info(productService.retryTemplate());
+	}
+
+	private void retry() {
+		productService.retry("str");
 	}
 
 	private void async() throws InterruptedException {
@@ -82,7 +92,7 @@ public class SpringninjaApplication implements CommandLineRunner {
 		List<CompletableFuture<Product>> completableFutures = Arrays.asList(apple, lemon, coconut);
 		CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0]))
 			.whenComplete((aVoid, throwable) ->
-				completableFutures.forEach(completableFuture -> log.info(completableFuture.join()))
+				completableFutures.forEach(completableFuture -> log.info("Completed -->> " + completableFuture.join()))
 			).join();
 		stopWatch.stop();
 

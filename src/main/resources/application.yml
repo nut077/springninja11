@@ -36,3 +36,30 @@ server:
       enabled: true # เขียน log เมื่อมีการยิง request เข้ามา
       dir: undertow-accesslog
       pattern: '%t %I %r %s %b %D'
+
+custom:
+  async:
+    corePoolSize: 10
+    queueCapacity: 200
+    maxPoolSize: 20
+    threadNamePrefix: Async-
+    keepAlive: 30s
+    allowCoreThreadTimeOut: true
+
+  caffeine:
+    cache:
+      productsMaxSize: 10
+      productMaxSize: 100
+      expireAfterAccess: 1h
+      expireAfterWrite: 24h
+
+  retry:
+    maxAttempts: 3
+    multiplier: 2
+    initialInterval: 1000
+    maxInterval: 60000
+
+  scheduler:
+    poolSize: 3
+    threadNamePrefix: Scheduler-
+
