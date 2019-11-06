@@ -1,6 +1,6 @@
 package com.github.nut077.springninja.config;
 
-import com.github.nut077.springninja.config.property.SchedulerProperty;
+import com.github.nut077.springninja.component.property.SchedulerProperty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.task.TaskSchedulerBuilder;
 import org.springframework.context.annotation.Configuration;

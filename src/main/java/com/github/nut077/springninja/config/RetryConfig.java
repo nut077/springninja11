@@ -1,6 +1,6 @@
 package com.github.nut077.springninja.config;
 
-import com.github.nut077.springninja.config.property.RetryProperty;
+import com.github.nut077.springninja.component.property.RetryProperty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

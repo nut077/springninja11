@@ -1,6 +1,6 @@
 package com.github.nut077.springninja.config;
 
-import com.github.nut077.springninja.config.property.AsyncProperty;
+import com.github.nut077.springninja.component.property.AsyncProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.ThreadContext;

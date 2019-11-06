@@ -1,7 +1,7 @@
 package com.github.nut077.springninja.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.nut077.springninja.config.property.CaffeineCacheProperty;
+import com.github.nut077.springninja.component.property.CaffeineCacheProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.cache.annotation.CacheEvict;

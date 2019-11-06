@@ -1,4 +1,4 @@
-package com.github.nut077.springninja.config.property;
+package com.github.nut077.springninja.component.property;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

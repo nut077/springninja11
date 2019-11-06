@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Profile("uat")
-public class Minus implements Calculate {
+public class Minus implements CalculatorProfile {
 
   @Override
   public int calculate(int a, int b) {

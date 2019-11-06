@@ -1,16 +1,19 @@
 package com.github.nut077.springninja;
 
 import com.github.nut077.springninja.config.CaffeineCacheConfig;
+import com.github.nut077.springninja.config.testbean.CalculatorBean;
 import com.github.nut077.springninja.entity.Order;
 import com.github.nut077.springninja.entity.OrderId;
 import com.github.nut077.springninja.entity.Product;
 import com.github.nut077.springninja.repository.OrderRepository;
 import com.github.nut077.springninja.repository.ProductRepository;
 import com.github.nut077.springninja.repository.specification.ProductSpec;
-import com.github.nut077.springninja.service.testprofile.Calculate;
 import com.github.nut077.springninja.service.ProductService;
+import com.github.nut077.springninja.service.testprofile.CalculatorProfile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -46,7 +49,11 @@ public class SpringninjaApplication implements CommandLineRunner {
 	private final OrderRepository orderRepository;
 	private final SimpleCacheManager simpleCacheManager;
 	private final CaffeineCacheConfig caffeineCacheConfig;
-	private final Calculate calculate;
+	private final CalculatorProfile calculatorProfile;
+
+	@Autowired
+	@Qualifier("methodPlus")
+	private CalculatorBean cal;
 
 	DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
@@ -70,12 +77,17 @@ public class SpringninjaApplication implements CommandLineRunner {
 		//async();
 		//retry();
 		//retryTemplate();
-		profilesActive();
+		//profilesActive();
+		bean();
+	}
+
+	private void bean() {
+		log.info(cal.calculate(5, 3)); // result -->> 8
 	}
 
 	private void profilesActive() {
 		// profile dev
-		log.info(calculate.calculate(5, 3)); // result -->> 8
+		log.info(calculatorProfile.calculate(5, 3)); // result -->> 8
 		// profile uat
 		//log.info(calculate.calculate(5, 3)); // result -->> 2
 	}
