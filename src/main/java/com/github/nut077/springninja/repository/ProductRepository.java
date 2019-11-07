@@ -71,4 +71,10 @@ public interface ProductRepository extends CommonRepository<Product, Long> {
   // used for Async
   Optional<Product> findByName(String name);
 
+
+  // updateScore
+  @Modifying(clearAutomatically = true)
+  @Query(value = "update products set score = :score where id = :id", nativeQuery = true)
+  int updateScore(@Param("id") Long id, @Param("score") double score);
+
 }

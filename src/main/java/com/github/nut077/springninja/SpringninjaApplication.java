@@ -78,7 +78,7 @@ public class SpringninjaApplication implements CommandLineRunner {
 		//retry();
 		//retryTemplate();
 		//profilesActive();
-		bean();
+		//bean();
 	}
 
 	private void bean() {
@@ -215,16 +215,16 @@ public class SpringninjaApplication implements CommandLineRunner {
 		productCache();
 		log.info("#####################################################");
 
-		Product product1 = Product.builder().id(1L).code("101").name("A1").score(99.99).build();
+		Product product1 = productService.find(1L);
+		product1.setScore(99.99);
 		log.info("Before update product id 1 -->> {}", product1);
-		productService.update(product1);
-		log.info("After update product id 1 -->> {}", productService.find(1L).get());
+		productService.replace(1L, product1);
+		log.info("After update product id 1 -->> {}", productService.find(1L));
 		productCache();
 		log.info("#####################################################");
 
 		log.info("evict product 2L");
 		productService.delete(2L);
-		log.info(productService.find(2L));
 		productCache();
 
 		log.info("evict all");

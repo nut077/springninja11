@@ -66,6 +66,10 @@ custom:
     poolSize: 3
     threadNamePrefix: Scheduler-
 
+  formatdatetime:
+    date: d-M-yyyy
+    dateTime: d-M-yyyy HH:mm:ss
+
 #  สร้าง profile ใหม่ ใช้ ---
 ---
 spring:

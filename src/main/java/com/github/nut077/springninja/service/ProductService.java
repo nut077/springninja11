@@ -14,16 +14,15 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.github.nut077.springninja.config.CaffeineCacheConfig.CacheName.PRODUCT;
-import static com.github.nut077.springninja.config.CaffeineCacheConfig.CacheName.PRODUCTS;
 
 @Service
 @Log4j2
@@ -39,29 +38,32 @@ public class ProductService {
   private final ProductRepository productRepository;
   private final RetryTemplate retryTemplate;
 
-  @Cacheable(cacheNames = PRODUCTS) // cache name is PRODUCTS
+  //@Cacheable(cacheNames = PRODUCTS) // cache name is PRODUCTS
   public List<Product> findAll() {
     log.info("Connected to database");
     return productRepository.findAll();
   }
 
   @Cacheable(unless = "#result?.score < 50") // ถ้า score < 50 จะไม่ cache
-  public Optional<Product> find(Long id) {
+  public Product find(Long id) {
     log.info("Connected to database");
-    return productRepository.findById(id);
+    return productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found id -->> " + id));
+  }
+
+  public Product save(Product product) {
+    return productRepository.save(product);
   }
 
   @CachePut(key = "#product.id") // update ค่าใน cache
-  public Optional<Product> update(Product product) {
-    return Optional.ofNullable(productRepository.save(product));
+  public Product replace(Long id, Product product) {
+    log.info(() -> "replace");
+    Product product1 = find(id);
+    return productRepository.save(product1);
   }
 
-  public Optional<Product> save(Product product) {
-    return Optional.ofNullable(productRepository.save(product));
-  }
-
-  @CacheEvict
+  @CacheEvict(key = "#id")
   public void delete(Long id) {
+    log.info(() -> "delete id " + id);
     productRepository.deleteById(id);
   }
 
@@ -115,5 +117,12 @@ public class ProductService {
         return "complete from recover callback";
       }
     );
+  }
+
+  @Transactional
+  @CacheEvict(key = "#id")
+  public int updateScore(Long id, double score) {
+    log.info(() -> "update score id = " + id + " score = " + score);
+    return productRepository.updateScore(id, score);
   }
 }
