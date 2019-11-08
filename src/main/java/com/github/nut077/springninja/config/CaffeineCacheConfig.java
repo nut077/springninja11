@@ -15,10 +15,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.Arrays;
 
-@Configuration(proxyBeanMethods = false)
 @Log4j2
 @EnableCaching
 @RequiredArgsConstructor
+@Configuration(proxyBeanMethods = false)
 public class CaffeineCacheConfig {
 
   private final CaffeineCacheProperty props;

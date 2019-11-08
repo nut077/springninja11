@@ -14,8 +14,8 @@ import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
-@Configuration(proxyBeanMethods = false)
 @RequiredArgsConstructor
+@Configuration(proxyBeanMethods = false)
 public class JacksonConfig {
 
   private final DateTimeFormatProperty props;

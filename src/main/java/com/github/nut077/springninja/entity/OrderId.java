@@ -7,10 +7,10 @@ import java.io.Serializable;
 
 @Getter
 @Setter
+@Embeddable
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Embeddable
 public class OrderId implements Serializable {
 
   private Long id;

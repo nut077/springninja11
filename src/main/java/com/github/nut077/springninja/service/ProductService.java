@@ -24,8 +24,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.github.nut077.springninja.config.CaffeineCacheConfig.CacheName.PRODUCT;
 
-@Service
 @Log4j2
+@Service
 @RequiredArgsConstructor
 @CacheConfig(cacheNames = PRODUCT) // cache name default
 public class ProductService {

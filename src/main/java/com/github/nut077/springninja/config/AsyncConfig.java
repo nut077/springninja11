@@ -14,10 +14,10 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
-@Configuration(proxyBeanMethods = false)
 @Log4j2
 @EnableAsync
 @RequiredArgsConstructor
+@Configuration(proxyBeanMethods = false)
 public class AsyncConfig implements AsyncConfigurer {
 
   private final AsyncProperty props;

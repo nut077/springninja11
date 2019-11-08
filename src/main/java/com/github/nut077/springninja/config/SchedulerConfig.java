@@ -9,9 +9,9 @@ import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
-@Configuration(proxyBeanMethods = false)
 @EnableScheduling
 @RequiredArgsConstructor
+@Configuration(proxyBeanMethods = false)
 public class SchedulerConfig implements SchedulingConfigurer {
 
   private final SchedulerProperty props;
