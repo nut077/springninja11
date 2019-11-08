@@ -1,6 +1,7 @@
 package com.github.nut077.springninja.service;
 
 import com.github.nut077.springninja.entity.Product;
+import com.github.nut077.springninja.exception.NotFoundException;
 import com.github.nut077.springninja.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -47,7 +48,7 @@ public class ProductService {
   @Cacheable(unless = "#result?.score < 50") // ถ้า score < 50 จะไม่ cache
   public Product find(Long id) {
     log.info("Connected to database");
-    return productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found id -->> " + id));
+    return productRepository.findById(id).orElseThrow(() -> new NotFoundException("Product not found id -->> " + id));
   }
 
   public Product save(Product product) {
