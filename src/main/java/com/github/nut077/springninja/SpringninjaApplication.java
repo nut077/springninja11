@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.data.domain.Example;
@@ -39,9 +40,10 @@ import java.util.concurrent.TimeUnit;
 import static com.github.nut077.springninja.config.CaffeineCacheConfig.CacheName.PRODUCT;
 import static com.github.nut077.springninja.config.CaffeineCacheConfig.CacheName.PRODUCTS;
 
+@Log4j2
 @SpringBootApplication
 @RequiredArgsConstructor
-@Log4j2
+@ConfigurationPropertiesScan
 public class SpringninjaApplication implements CommandLineRunner {
 
 	private final ProductRepository productRepository;
