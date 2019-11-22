@@ -32,7 +32,7 @@ public class AsyncConfig implements AsyncConfigurer {
         .threadNamePrefix(props.getThreadNamePrefix())
         .keepAlive(props.getKeepAlive())
         .allowCoreThreadTimeOut(props.getAllowCoreThreadTimeOut())
-        .taskDecorator(runnable -> process(runnable, ThreadContext.getContext()))
+        .taskDecorator(runnable -> process(runnable, ThreadContext.getContext())) // ทำให้ log correlationId ที่เป็น async สามารถ log ได้
         .build();
     executor.setWaitForTasksToCompleteOnShutdown(true);
     executor.initialize();
