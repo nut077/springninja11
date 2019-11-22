@@ -12,3 +12,4 @@ target/
 /undertow-accesslog/
 log/
 /course-db.trace.db
+/course-db.mv.db
