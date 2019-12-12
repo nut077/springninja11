@@ -1,7 +1,6 @@
 package com.github.nut077.springninja.controller;
 
 import com.github.nut077.springninja.dto.ProductDto;
-import com.github.nut077.springninja.entity.Product;
 import com.github.nut077.springninja.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -24,7 +23,7 @@ public class ProductController extends CommonController {
   }
 
   @GetMapping("/products/{id}")
-  public ResponseEntity<Product> get(@PathVariable Long id) {
+  public ResponseEntity<ProductDto> get(@PathVariable Long id) {
     log.info(() -> "ProductController :: get");
     return ResponseEntity.ok(productService.find(id));
   }
