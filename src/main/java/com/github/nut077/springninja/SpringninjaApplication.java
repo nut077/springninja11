@@ -2,6 +2,7 @@ package com.github.nut077.springninja;
 
 import com.github.nut077.springninja.config.CaffeineCacheConfig;
 import com.github.nut077.springninja.config.testbean.CalculatorBean;
+import com.github.nut077.springninja.dto.mapper.ProductMapper;
 import com.github.nut077.springninja.entity.Order;
 import com.github.nut077.springninja.entity.OrderId;
 import com.github.nut077.springninja.entity.Product;
@@ -52,6 +53,7 @@ public class SpringninjaApplication implements CommandLineRunner {
 	private final SimpleCacheManager simpleCacheManager;
 	private final CaffeineCacheConfig caffeineCacheConfig;
 	private final CalculatorProfile calculatorProfile;
+	private final ProductMapper mapper;
 
 	@Autowired
 	@Qualifier("methodPlus")
@@ -105,9 +107,9 @@ public class SpringninjaApplication implements CommandLineRunner {
 	private void async() throws InterruptedException {
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		productService.save(Product.builder().name("apple").code("F001").build());
-		productService.save(Product.builder().name("lemon").code("F002").build());
-		productService.save(Product.builder().name("coconut").code("F003").build());
+		productService.save(mapper.map(Product.builder().name("apple").code("F001").build()));
+		productService.save(mapper.map(Product.builder().name("lemon").code("F002").build()));
+		productService.save(mapper.map(Product.builder().name("coconut").code("F003").build()));
 
 		CompletableFuture<Product> apple = productService.find("apple");
 		CompletableFuture<Product> lemon = productService.find("lemon");
@@ -220,7 +222,7 @@ public class SpringninjaApplication implements CommandLineRunner {
 		Product product1 = productService.find(1L);
 		product1.setScore(99.99);
 		log.info("Before update product id 1 -->> {}", product1);
-		productService.replace(1L, product1);
+		productService.replace(1L, mapper.map(product1));
 		log.info("After update product id 1 -->> {}", productService.find(1L));
 		productCache();
 		log.info("#####################################################");

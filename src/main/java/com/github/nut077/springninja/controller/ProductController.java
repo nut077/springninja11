@@ -1,5 +1,6 @@
 package com.github.nut077.springninja.controller;
 
+import com.github.nut077.springninja.dto.ProductDto;
 import com.github.nut077.springninja.entity.Product;
 import com.github.nut077.springninja.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class ProductController extends CommonController {
   private final ProductService productService;
 
   @GetMapping("/products")
-  public ResponseEntity<List<Product>> getAll() {
+  public ResponseEntity<List<ProductDto>> getAll() {
     log.info(() -> "ProductController :: getAll");
     return ResponseEntity.ok(productService.findAll());
   }
@@ -29,15 +30,15 @@ public class ProductController extends CommonController {
   }
 
   @PostMapping("/products")
-  public ResponseEntity<Product> save(@RequestBody Product product) {
+  public ResponseEntity<ProductDto> save(@RequestBody ProductDto dto) {
     log.info(() -> "ProductController :: save");
-    return ResponseEntity.ok(productService.save(product));
+    return ResponseEntity.ok(productService.save(dto));
   }
 
   @PutMapping("/products/{id}")
-  public ResponseEntity<Product> replace(@PathVariable Long id, @RequestBody Product product) {
+  public ResponseEntity<ProductDto> replace(@PathVariable Long id, @RequestBody ProductDto dto) {
     log.info(() -> "ProductController :: replace");
-    return ResponseEntity.ok(productService.replace(id, product));
+    return ResponseEntity.ok(productService.replace(id, dto));
   }
 
   @PatchMapping("/products/{id}/{score}")

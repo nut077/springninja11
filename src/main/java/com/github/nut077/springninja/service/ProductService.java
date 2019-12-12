@@ -1,5 +1,7 @@
 package com.github.nut077.springninja.service;
 
+import com.github.nut077.springninja.dto.ProductDto;
+import com.github.nut077.springninja.dto.mapper.ProductMapper;
 import com.github.nut077.springninja.entity.Product;
 import com.github.nut077.springninja.exception.NotFoundException;
 import com.github.nut077.springninja.repository.ProductRepository;
@@ -31,42 +33,50 @@ import static com.github.nut077.springninja.config.CaffeineCacheConfig.CacheName
 @CacheConfig(cacheNames = PRODUCT) // cache name default
 public class ProductService {
 
+  private final ProductRepository productRepository;
+  private final RetryTemplate retryTemplate;
+  private final ProductMapper mapper;
+
   @PostConstruct
   private void init() {
     log.info(this.getClass().getSimpleName() + ": Init");
   }
 
-  private final ProductRepository productRepository;
-  private final RetryTemplate retryTemplate;
-
   //@Cacheable(cacheNames = PRODUCTS) // cache name is PRODUCTS
-  public List<Product> findAll() {
+  public List<ProductDto> findAll() {
     log.info("Connected to database");
-    return productRepository.findAll();
+    return mapper.map(productRepository.findAll());
   }
 
   @Cacheable(unless = "#result?.score < 50") // ถ้า score < 50 จะไม่ cache
-  public Product find(Long id) {
+  public ProductDto find(Long id) {
     log.info("Connected to database");
-    return productRepository.findById(id).orElseThrow(() -> new NotFoundException("Product not found id -->> " + id));
+    return mapper.map(productRepository.findById(id).orElseThrow(() -> new NotFoundException("Product not found id -->> " + id)));
   }
 
-  public Product save(Product product) {
+  public ProductDto save(ProductDto dto) {
     log.info(() -> "Save");
-    return productRepository.save(product);
+    return mapper.map(productRepository.save(mapper.map(dto)));
   }
 
   @CachePut(key = "#product.id") // update ค่าใน cache
-  public Product replace(Long id, Product product) {
+  public ProductDto replace(Long id, ProductDto dto) {
     log.info(() -> "replace");
-    Product product1 = find(id);
-    return productRepository.save(product1);
+    find(id);
+    return mapper.map(productRepository.save(mapper.map(dto)));
   }
 
   @CacheEvict(key = "#id")
   public void delete(Long id) {
     log.info(() -> "delete id " + id);
     productRepository.deleteById(id);
+  }
+
+  @Transactional
+  @CacheEvict(key = "#id")
+  public int updateScore(Long id, double score) {
+    log.info(() -> "update score id = " + id + " score = " + score);
+    return productRepository.updateScore(id, score);
   }
 
   @Async // จะใช้ได้เฉพาะ method ที่เป็น public เท่านั้น
@@ -119,12 +129,5 @@ public class ProductService {
         return "complete from recover callback";
       }
     );
-  }
-
-  @Transactional
-  @CacheEvict(key = "#id")
-  public int updateScore(Long id, double score) {
-    log.info(() -> "update score id = " + id + " score = " + score);
-    return productRepository.updateScore(id, score);
   }
 }
