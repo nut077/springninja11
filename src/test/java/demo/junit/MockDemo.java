@@ -16,9 +16,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.never;
 
+//import static org.hamcrest.MatcherAssert.assertThat;
+
 @DisplayName("Mockito demo")
 @ExtendWith(MockitoExtension.class)
-public class MockDemo {
+public class MockDemo implements CommonTest {
 
   @Mock
   List<Integer> mock;
