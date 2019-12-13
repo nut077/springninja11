@@ -219,7 +219,7 @@ public class SpringninjaApplication implements CommandLineRunner {
 		productCache();
 		log.info("#####################################################");
 
-		Product product1 = productService.find(1L);
+		Product product1 = mapper.map(productService.find(1L));
 		product1.setScore(99.99);
 		log.info("Before update product id 1 -->> {}", product1);
 		productService.replace(1L, mapper.map(product1));
