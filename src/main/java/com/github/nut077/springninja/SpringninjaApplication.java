@@ -183,13 +183,13 @@ public class SpringninjaApplication implements CommandLineRunner {
 		stopWatchBeforeFindAllProducts.start();
 		productsCache();
 		log.info("Before cache find all products");
-		log.info(productService.findAll().size());
+		log.info(productService.findAll(null).size());
 		stopWatchBeforeFindAllProducts.stop();
 		log.info(() -> "time -->> " + stopWatchBeforeFindAllProducts.getTotalTimeSeconds() + " Sec.");
 		StopWatch stopWatchAfterFindAllProducts = new StopWatch();
 		stopWatchAfterFindAllProducts.start();
 		log.info("After cache find all products");
-		log.info(productService.findAll().size());
+		log.info(productService.findAll(null).size());
 		stopWatchAfterFindAllProducts.stop();
 		log.info(() -> "time -->> " + stopWatchAfterFindAllProducts.getTotalTimeSeconds() + " Sec.");
 		productsCache();

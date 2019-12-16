@@ -18,6 +18,7 @@ import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -43,9 +44,9 @@ public class ProductService {
   }
 
   //@Cacheable(cacheNames = PRODUCTS) // cache name is PRODUCTS
-  public List<ProductDto> findAll() {
+  public List<ProductDto> findAll(Product.Status status) {
     log.info("Connected to database");
-    return mapper.map(productRepository.findAll());
+    return mapper.map(StringUtils.isEmpty(status) ? productRepository.findAll() : productRepository.findAllByStatus(status));
   }
 
   @Cacheable(unless = "#result?.score < 50") // ถ้า score < 50 จะไม่ cache

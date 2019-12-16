@@ -1,6 +1,7 @@
 package com.github.nut077.springninja.controller;
 
 import com.github.nut077.springninja.dto.ProductDto;
+import com.github.nut077.springninja.entity.Product;
 import com.github.nut077.springninja.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -19,9 +20,9 @@ public class ProductController extends CommonController {
   private final ProductService productService;
 
   @GetMapping("/products")
-  public ResponseEntity<List<ProductDto>> getAll() {
+  public ResponseEntity<List<ProductDto>> getAll(@RequestParam(required = false) Product.Status status) {
     log.info(() -> "ProductController :: getAll");
-    return ok(productService.findAll());
+    return ok(productService.findAll(status));
   }
 
   @GetMapping("/products/{id}")
