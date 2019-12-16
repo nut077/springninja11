@@ -24,7 +24,8 @@ public interface ProductRepository extends CommonRepository<Product, Long> {
   void sqlUpdate(String name, String code);
 
   // query method
-  Optional<Collection<Product>> findAllByStatus(Product.Status status);
+  //Optional<Collection<Product>> findAllByStatus(Product.Status status);
+  List<Product> findAllByStatus(Product.Status status);
   Optional<Collection<Product>> findAllByStatusOrderByIdDesc(Product.Status status);
   Optional<Collection<Product>> findAllByNameContaining(String name);
   Optional<Collection<Product>> findAllByNameContainingIgnoreCase(String name);
@@ -73,7 +74,7 @@ public interface ProductRepository extends CommonRepository<Product, Long> {
 
 
   // updateScore
-  @Modifying(clearAutomatically = true)
+  @Modifying(clearAutomatically = true) // หลังจากทำการ update ให้ flush เลข
   @Query(value = "update products set score = :score where id = :id", nativeQuery = true)
   int updateScore(@Param("id") Long id, @Param("score") double score);
 

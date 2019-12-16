@@ -1,19 +1,18 @@
 package demo.junit;
 
+import lombok.RequiredArgsConstructor;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
+@RequiredArgsConstructor
 public class EmailMatcher extends TypeSafeMatcher<String> {
 
   private final String expression;
 
-  private EmailMatcher(final String expression) {
-    this.expression = expression;
-  }
-
   public static EmailMatcher isEmail() {
     return new EmailMatcher("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
   }
+
   @Override
   protected boolean matchesSafely(String string) {
     return string.matches(expression);

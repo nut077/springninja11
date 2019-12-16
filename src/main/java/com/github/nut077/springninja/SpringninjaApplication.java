@@ -2,6 +2,7 @@ package com.github.nut077.springninja;
 
 import com.github.nut077.springninja.config.CaffeineCacheConfig;
 import com.github.nut077.springninja.config.testbean.CalculatorBean;
+import com.github.nut077.springninja.dto.ProductDto;
 import com.github.nut077.springninja.dto.mapper.ProductMapper;
 import com.github.nut077.springninja.entity.Order;
 import com.github.nut077.springninja.entity.OrderId;
@@ -17,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.cache.support.SimpleCacheManager;
@@ -42,7 +42,7 @@ import static com.github.nut077.springninja.config.CaffeineCacheConfig.CacheName
 import static com.github.nut077.springninja.config.CaffeineCacheConfig.CacheName.PRODUCTS;
 
 @Log4j2
-@SpringBootApplication
+//@SpringBootApplication
 @RequiredArgsConstructor
 @ConfigurationPropertiesScan
 public class SpringninjaApplication implements CommandLineRunner {
@@ -67,22 +67,22 @@ public class SpringninjaApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		//testImmutable();
-		//testListener();
-		//testDynamicInsertAndUpdate();
-		//testElementCollection();
-		//testTransactional();
-		//queryByExample();
-		//queryMethod();
-		//nameNativeQuery();
-		//queryAnnotation();
-		//dynamicQuery();
-		//cacheCaffeine();
-		//async();
-		//retry();
-		//retryTemplate();
-		//profilesActive();
-		//bean();
+		testImmutable();
+		testListener();
+		testDynamicInsertAndUpdate();
+		testElementCollection();
+		testTransactional();
+		queryByExample();
+		queryMethod();
+		nameNativeQuery();
+		queryAnnotation();
+		dynamicQuery();
+		cacheCaffeine();
+		async();
+		retry();
+		retryTemplate();
+		profilesActive();
+		bean();
 	}
 
 	private void bean() {
@@ -219,10 +219,10 @@ public class SpringninjaApplication implements CommandLineRunner {
 		productCache();
 		log.info("#####################################################");
 
-		Product product1 = mapper.map(productService.find(1L));
+		ProductDto product1 = productService.find(1L);
 		product1.setScore(99.99);
 		log.info("Before update product id 1 -->> {}", product1);
-		productService.replace(1L, mapper.map(product1));
+		productService.replace(1L, product1);
 		log.info("After update product id 1 -->> {}", productService.find(1L));
 		productCache();
 		log.info("#####################################################");
@@ -374,7 +374,8 @@ public class SpringninjaApplication implements CommandLineRunner {
 		productRepository.findAll().forEach(System.out::println);
 
 		log.info("Find all 'APPROVED' products");
-		productRepository.findAllByStatus(Product.Status.APPROVED).orElse(Collections.EMPTY_LIST).forEach(System.out::println);
+		//productRepository.findAllByStatus(Product.Status.APPROVED).orElse(Collections.EMPTY_LIST).forEach(System.out::println);
+		productRepository.findAllByStatus(Product.Status.APPROVED).forEach(System.out::println);
 
 		log.info("Find all 'APPROVED' products order by Id desc");
 		productRepository.findAllByStatusOrderByIdDesc(Product.Status.APPROVED).orElse(Collections.EMPTY_LIST).forEach(System.out::println);
