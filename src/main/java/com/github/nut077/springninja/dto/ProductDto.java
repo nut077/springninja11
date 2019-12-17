@@ -16,7 +16,7 @@ public class ProductDto {
   private String name;
   private String description;
   private double score;
-  //private double price;
+  private double price;
   private String status;
   private String aliasNames;
   private Integer version;

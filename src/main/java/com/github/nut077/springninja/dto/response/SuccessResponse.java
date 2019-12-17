@@ -21,6 +21,18 @@ public class SuccessResponse<T> {
     this.data = data;
   }
 
+  public static <T> SuccessResponseBuilder builder(T data) {
+    return hiddenBuilder()
+      .data(data) // mandatory value
+      .code("xxx-200")
+      .message("success")
+      .timestamp(OffsetDateTime.now());
+  }
+
+  private static <T> SuccessResponseBuilder<T> hiddenBuilder() {
+    return new SuccessResponseBuilder<>();
+  }
+
   public static class SuccessResponseBuilder<T> {
 
     private String code;

@@ -8,8 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
+import static com.github.nut077.springninja.dto.response.SuccessResponse.builder;
 import static org.springframework.http.ResponseEntity.ok;
 
 @Log4j2
@@ -20,33 +19,33 @@ public class ProductController extends CommonController {
   private final ProductService productService;
 
   @GetMapping("/products")
-  public ResponseEntity<List<ProductDto>> getAll(@RequestParam(required = false) Product.Status status) {
+  public ResponseEntity getAll(@RequestParam(required = false) Product.Status status) {
     log.info(() -> "ProductController :: getAll");
-    return ok(productService.findAll(status));
+    return ok(builder(productService.findAll(status)).build());
   }
 
   @GetMapping("/products/{id}")
-  public ResponseEntity<ProductDto> get(@PathVariable Long id) {
+  public ResponseEntity get(@PathVariable Long id) {
     log.info(() -> "ProductController :: get");
-    return ok(productService.find(id));
+    return ok(builder(productService.find(id)).build());
   }
 
   @PostMapping("/products")
-  public ResponseEntity<ProductDto> save(@RequestBody ProductDto dto) {
+  public ResponseEntity save(@RequestBody ProductDto dto) {
     log.info(() -> "ProductController :: save");
-    return ok(productService.save(dto));
+    return ok(builder(productService.save(dto)).message("created").build());
   }
 
   @PutMapping("/products/{id}")
-  public ResponseEntity<ProductDto> replace(@PathVariable Long id, @RequestBody ProductDto dto) {
+  public ResponseEntity replace(@PathVariable Long id, @RequestBody ProductDto dto) {
     log.info(() -> "ProductController :: replace");
-    return ok(productService.replace(id, dto));
+    return ok(builder(productService.replace(id, dto)).message("product updated").build());
   }
 
   @PatchMapping("/products/{id}/{score}")
-  public int updateScore(@PathVariable Long id, @PathVariable double score) {
+  public ResponseEntity updateScore(@PathVariable Long id, @PathVariable double score) {
     log.info(() -> "ProductController :: updateScore");
-    return productService.updateScore(id, score);
+    return ok(builder(productService.updateScore(id, score)).message("product score updated").build());
   }
 
   @DeleteMapping("/products/{id}")
