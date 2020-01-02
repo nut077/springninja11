@@ -33,7 +33,6 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -49,6 +48,9 @@ class ProductControllerTest {
   @Autowired
   private MockMvc mockMvc;
 
+  @Autowired
+  private ObjectMapper objectMapper;
+
   @MockBean
   private ProductService service;
 
@@ -57,7 +59,7 @@ class ProductControllerTest {
 
   // Object to JSON
   private String toJsonString(final Object object) throws JsonProcessingException {
-    return new ObjectMapper().writeValueAsString(object);
+    return objectMapper.writeValueAsString(object);
   }
 
   // mock product
@@ -131,7 +133,7 @@ class ProductControllerTest {
     // when
     mockMvc
       .perform(post("/api/v1/products")
-        .with(csrf())
+        //.with(csrf())
         .headers(getHttpHeaders())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .content(toJsonString(dto))
@@ -157,7 +159,7 @@ class ProductControllerTest {
     mockMvc
       .perform(
         put("/api/v1/products/{id}", 1L)
-          .with(csrf())
+          //.with(csrf())
           .headers(getHttpHeaders())
           .contentType(MediaType.APPLICATION_JSON_VALUE)
           .content(toJsonString(dto))
@@ -181,7 +183,7 @@ class ProductControllerTest {
     mockMvc
       .perform(
         patch("/api/v1/products/{id}/{score}", 1L, 99.0)
-          .with(csrf())
+          //.with(csrf())
           .headers(getHttpHeaders())
           .contentType(MediaType.APPLICATION_JSON_VALUE)
       )
@@ -202,7 +204,7 @@ class ProductControllerTest {
     mockMvc
       .perform(
         delete("/api/v1/products/1")
-          .with(csrf())
+          //.with(csrf())
           .headers(getHttpHeaders())
           .contentType(MediaType.APPLICATION_JSON_VALUE)
       )
