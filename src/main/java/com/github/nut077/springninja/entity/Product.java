@@ -76,6 +76,12 @@ public class Product extends Common {
   @CollectionTable(name = "products_alias_names_custom", joinColumns = @JoinColumn(name = "products_id_custom")) // ถ้าต้องการเปลี่ยนชื่อตาราง
   private Set<String> aliasNames = new HashSet<>();
 
+  // วิธีที่จะทำให้ field map เข้าไปที่ database
+  /*@Transient
+  private String excludedField1;
+  private transient String excludedField2;
+  private static String excludedField3;*/
+
   @RequiredArgsConstructor
   public enum Status {
     APPROVED("A"),
