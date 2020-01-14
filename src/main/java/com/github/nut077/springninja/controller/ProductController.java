@@ -20,6 +20,12 @@ public class ProductController extends CommonController {
 
   @GetMapping("/products")
   public ResponseEntity getAll(@RequestParam(required = false) Product.Status status) {
+    /*HttpHeaders headers = new HttpHeaders();
+    headers.add("x-developer", "freedom");
+    headers.add("x-company", "eiei");
+    ResponseEntity.ok().headers(headers).body(productService.findAll(status));
+    ResponseEntity.status(HttpStatus.OK).headers(headers).body(productService.findAll(status));*/
+
     log.info(() -> "ProductController :: getAll");
     return ok(builder(productService.findAll(status)).build());
   }
